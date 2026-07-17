@@ -3,15 +3,11 @@
 # Person A - Data Engineering Pipeline
 # =====================================================
 
-# ============================
-# 1. Import Libraries
-# ============================
-
 import pandas as pd
 
-# ============================
-# 2. Load Datasets
-# ============================
+# =====================================================
+# 1. Load Datasets
+# =====================================================
 
 print("=" * 60)
 print("Loading Walmart Datasets...")
@@ -23,9 +19,9 @@ stores = pd.read_csv("data/raw/stores.csv")
 
 print("\n✅ Datasets Loaded Successfully!")
 
-# ============================
-# 3. Data Audit
-# ============================
+# =====================================================
+# 2. Data Audit
+# =====================================================
 
 datasets = {
     "TRAIN": train,
@@ -39,13 +35,7 @@ for name, df in datasets.items():
     print(f"{name} DATASET")
     print("=" * 60)
 
-    print(f"\nShape: {df.shape}")
-
-    print("\nColumn Names:")
-    print(df.columns.tolist())
-
-    print("\nData Types:")
-    print(df.dtypes)
+    print(f"\nShape : {df.shape}")
 
     print("\nMissing Values:")
     print(df.isnull().sum())
@@ -53,21 +43,21 @@ for name, df in datasets.items():
     print("\nDuplicate Rows:")
     print(df.duplicated().sum())
 
-# ============================
-# 4. Data Cleaning
-# ============================
+# =====================================================
+# 3. Data Cleaning
+# =====================================================
 
 print("\n" + "=" * 60)
 print("Starting Data Cleaning...")
 print("=" * 60)
 
 # Convert Date columns
+
 train["Date"] = pd.to_datetime(train["Date"])
 features["Date"] = pd.to_datetime(features["Date"])
 
-print("\n✅ Date columns converted successfully.")
+# Fill MarkDown values
 
-# Fill missing MarkDown values
 markdown_columns = [
     "MarkDown1",
     "MarkDown2",
@@ -78,26 +68,21 @@ markdown_columns = [
 
 features[markdown_columns] = features[markdown_columns].fillna(0)
 
-# Fill missing CPI and Unemployment values
+# Fill CPI & Unemployment
+
 features["CPI"] = features["CPI"].ffill().bfill()
 features["Unemployment"] = features["Unemployment"].ffill().bfill()
 
-print("✅ Missing values handled.")
+print("✅ Data Cleaning Completed!")
 
-print("\nRemaining Missing Values")
-print(features.isnull().sum())
-
-print("\n✅ Data Cleaning Completed Successfully!")
-
-# ============================
-# 5. Merge Datasets
-# ============================
+# =====================================================
+# 4. Merge Datasets
+# =====================================================
 
 print("\n" + "=" * 60)
 print("Merging Datasets...")
 print("=" * 60)
 
-# Merge train and features
 merged_data = pd.merge(
     train,
     features,
@@ -105,7 +90,6 @@ merged_data = pd.merge(
     how="left"
 )
 
-# Merge with stores
 merged_data = pd.merge(
     merged_data,
     stores,
@@ -113,24 +97,63 @@ merged_data = pd.merge(
     how="left"
 )
 
-print("✅ Datasets merged successfully!")
+print("✅ Merge Completed!")
 
-print("\nMerged Dataset Shape:")
-print(merged_data.shape)
+# =====================================================
+# 5. Feature Engineering
+# =====================================================
 
-print("\nMerged Dataset Columns:")
-print(merged_data.columns.tolist())
+print("\n" + "=" * 60)
+print("Performing Feature Engineering...")
+print("=" * 60)
 
-print("\nFirst 5 Rows:")
-print(merged_data.head())
+merged_data["Year"] = merged_data["Date"].dt.year
 
-# ============================
-# 6. Save Processed Dataset
-# ============================
+merged_data["Month"] = merged_data["Date"].dt.month
+
+merged_data["Month_Name"] = merged_data["Date"].dt.month_name()
+
+merged_data["Quarter"] = merged_data["Date"].dt.quarter
+
+merged_data["Week"] = merged_data["Date"].dt.isocalendar().week.astype(int)
+
+merged_data["Day"] = merged_data["Date"].dt.day
+
+merged_data["Day_Name"] = merged_data["Date"].dt.day_name()
+
+print("✅ Feature Engineering Completed!")
+
+print("\nNew Columns Added:")
+
+print([
+    "Year",
+    "Month",
+    "Month_Name",
+    "Quarter",
+    "Week",
+    "Day",
+    "Day_Name"
+])
+
+# =====================================================
+# 6. Save Dataset
+# =====================================================
 
 output_path = "data/processed/cleaned_data.csv"
 
-merged_data.to_csv(output_path, index=False)
+merged_data.to_csv(
+    output_path,
+    index=False
+)
 
-print(f"\n✅ Cleaned dataset saved successfully!")
-print(f"Location: {output_path}")
+print("\n✅ Dataset Saved Successfully!")
+
+print(f"\nLocation : {output_path}")
+
+print("\nFinal Dataset Shape :")
+
+print(merged_data.shape)
+
+print("\nFirst Five Rows :")
+
+print(merged_data.head())
