@@ -1,14 +1,6 @@
-# =====================================================
-# SUPPLY CHAIN DEMAND FORECASTING PROJECT
-# Person A - Data Engineering Pipeline
-# =====================================================
-
 import pandas as pd
 
-# =====================================================
-# 1. Load Datasets
-# =====================================================
-
+# Load datasets
 print("=" * 60)
 print("Loading Walmart Datasets...")
 print("=" * 60)
@@ -19,10 +11,7 @@ stores = pd.read_csv("data/raw/stores.csv")
 
 print("\n✅ Datasets Loaded Successfully!")
 
-# =====================================================
-# 2. Data Audit
-# =====================================================
-
+# Data audit
 datasets = {
     "TRAIN": train,
     "FEATURES": features,
@@ -43,21 +32,16 @@ for name, df in datasets.items():
     print("\nDuplicate Rows:")
     print(df.duplicated().sum())
 
-# =====================================================
-# 3. Data Cleaning
-# =====================================================
-
+# Data cleaning
 print("\n" + "=" * 60)
 print("Starting Data Cleaning...")
 print("=" * 60)
 
 # Convert Date columns
-
 train["Date"] = pd.to_datetime(train["Date"])
 features["Date"] = pd.to_datetime(features["Date"])
 
-# Fill MarkDown values
-
+# Fill missing MarkDown values
 markdown_columns = [
     "MarkDown1",
     "MarkDown2",
@@ -68,17 +52,13 @@ markdown_columns = [
 
 features[markdown_columns] = features[markdown_columns].fillna(0)
 
-# Fill CPI & Unemployment
-
+# Fill missing CPI and Unemployment values
 features["CPI"] = features["CPI"].ffill().bfill()
 features["Unemployment"] = features["Unemployment"].ffill().bfill()
 
 print("✅ Data Cleaning Completed!")
 
-# =====================================================
-# 4. Merge Datasets
-# =====================================================
-
+# Merge datasets
 print("\n" + "=" * 60)
 print("Merging Datasets...")
 print("=" * 60)
@@ -99,32 +79,22 @@ merged_data = pd.merge(
 
 print("✅ Merge Completed!")
 
-# =====================================================
-# 5. Feature Engineering
-# =====================================================
-
+# Feature engineering
 print("\n" + "=" * 60)
 print("Performing Feature Engineering...")
 print("=" * 60)
 
 merged_data["Year"] = merged_data["Date"].dt.year
-
 merged_data["Month"] = merged_data["Date"].dt.month
-
 merged_data["Month_Name"] = merged_data["Date"].dt.month_name()
-
 merged_data["Quarter"] = merged_data["Date"].dt.quarter
-
 merged_data["Week"] = merged_data["Date"].dt.isocalendar().week.astype(int)
-
 merged_data["Day"] = merged_data["Date"].dt.day
-
 merged_data["Day_Name"] = merged_data["Date"].dt.day_name()
 
 print("✅ Feature Engineering Completed!")
 
 print("\nNew Columns Added:")
-
 print([
     "Year",
     "Month",
@@ -135,10 +105,7 @@ print([
     "Day_Name"
 ])
 
-# =====================================================
-# 6. Save Dataset
-# =====================================================
-
+# Save processed dataset
 output_path = "data/processed/cleaned_data.csv"
 
 merged_data.to_csv(
@@ -147,13 +114,10 @@ merged_data.to_csv(
 )
 
 print("\n✅ Dataset Saved Successfully!")
-
 print(f"\nLocation : {output_path}")
 
-print("\nFinal Dataset Shape :")
-
+print("\nFinal Dataset Shape:")
 print(merged_data.shape)
 
-print("\nFirst Five Rows :")
-
+print("\nFirst Five Rows:")
 print(merged_data.head())
