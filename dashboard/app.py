@@ -97,9 +97,6 @@ st.markdown("""
         border-color: #2A2D35;
     }
     /* ---- Hide Deploy Button and Header ---- */
-    [data-testid="stHeader"] {
-        display: none !important;
-    }
     [data-testid="stAppDeployButton"] {
         display: none !important;
     }
