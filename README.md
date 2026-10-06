@@ -109,14 +109,6 @@ This project uses the [Walmart Recruiting – Store Sales Forecasting](https://w
 - **features.csv** — Store, date, temperature, fuel price, markdowns, CPI, unemployment
 - **stores.csv** — Store type and size
 
-## 👥 Team
-
-| Member | Role | Responsibilities |
-|---|---|---|
-| **Person A** | Data & SQL Owner | Dataset cleaning, SQL schema, database setup, analytical queries |
-| **Person B** | ML Model Owner | Prophet forecasting, Isolation Forest anomaly detection, model evaluation |
-| **Person C** | Dashboard & Report Owner | Streamlit dashboard, project report, presentation |
-
 ## 📄 License
 
 This project is for educational purposes as part of a university course project.
